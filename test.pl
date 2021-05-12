@@ -10,7 +10,7 @@ my @scripts = glob("tests/*.in");
 
 for my $script (@scripts) {
     system("rm -f tmp/output");
-    system("timeout -k 5 10 ./shell $script > tmp/output");
+    system("gtimeout -k 5 10 ./shell $script > tmp/output");
 
     my $correct = $script;
     $correct =~ s/\.in$/.out/;

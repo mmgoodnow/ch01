@@ -60,7 +60,7 @@ int run(sexp* se) {
 		assert(0);
 	}
 	
-	
+	return -1;
 }
 
 int run_cmd(sexp* se) {

@@ -26,14 +26,8 @@ char* read_line(int fd) {
 	return temp_line;
 }
 
-int main(int argc, char* argv[])
-{
-	if (argc != 2) {
-		fprintf(stderr, "Usage: ./shell input.sexp\n");
-		return 1;
-	}
-
-	int input = open(argv[1], O_RDONLY);
+int run_file(char* filename) {
+	int input = open(filename, O_RDONLY);
 	if (input == -1) {
 		perror("open failed");
 		return 1;
@@ -52,7 +46,38 @@ int main(int argc, char* argv[])
 	}
 
 	close(input);
-
 	return rv;
+}
+
+int run_interactive() {
+	char line[256];
+	int rv;
+
+	printf("mgosh$ ");
+	fflush(stdout);
+	while(fgets(line, 256, stdin)) {
+
+		vec* tokens = tokenize(line);
+		vec_print(tokens);
+		sexp* se = sexp_parse(tokens);
+		sexp_print_sexpr(se);
+		vec_free(tokens);
+
+		rv = run(se);
+		sexp_free(se);
+
+		printf("mgosh$ ");
+		fflush(stdout);
+	}
+	return rv;
+}
+
+int main(int argc, char* argv[])
+{
+	if (argc == 2) {
+		return run_file(argv[1]);
+	} else {
+		return run_interactive();
+	}
 }
 
